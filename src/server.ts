@@ -1,14 +1,20 @@
-import api from './api';
+import { WhipEndpoint } from '@eyevinn/whip-endpoint';
 
-const server = api({ title: '@eyevinn/typescript-nodejs' });
+if (!process.env.SMB_URL) {
+  throw new Error('SMB_URL environment variable is required');
+}
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 8000;
 
-server.listen({ port: PORT, host: '0.0.0.0' }, (err, address) => {
-  if (err) {
-    throw err;
-  }
-  console.log(`Server listening on ${address}`);
+const server = new WhipEndpoint({
+  port: PORT,
+  enabledWrtcPlugins: ['sfu-broadcaster']
 });
+server.setOriginSfuUrl(new URL('/conferences/', process.env.SMB_URL).toString());
+if (process.env.SMB_API_KEY) {
+  server.setSfuApiKey(process.env.SMB_API_KEY);
+}
+
+server.listen();
 
 export default server;
