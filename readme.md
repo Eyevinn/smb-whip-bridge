@@ -1,9 +1,9 @@
 <h1 align="center">
-  Project Name or Logo
+  SMB WHIP Bridge
 </h1>
 
 <div align="center">
-  project name - quick salespitch why this is awesome. 
+  Provides a WHIP endpoint for Symphony Media Bridge SFU
   <br />
   <br />
   :book: <b><a href="https://eyevinn.github.io/{{repo-name}}/">Read the documentation (github pages)</a></b> :eyes:

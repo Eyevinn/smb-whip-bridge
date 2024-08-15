@@ -1,7 +1,7 @@
 {
-  "name": "@eyevinn/typescript-nodejs",
+  "name": "smb-whip-bridge",
   "version": "1.0.0",
-  "description": "The default typescript-nodejs template for eyevinn projects",
+  "description": "WHIP endpoint for Symphony Media Bridge SFU",
   "scripts": {
     "test": "jest",
     "prepare": "husky install",
