@@ -40,6 +40,8 @@ The WHIP endpoint is now available at `http://localhost:8000/api/v2/whip/sfu-bro
 
 To try this out you can use the WHIP web client available [here](https://web.whip.eyevinn.technology/?endpoint=http%3A%2F%2Flocalhost%3A8000%2Fapi%2Fv2%2Fwhip%2Fsfu-broadcaster).
 
+If you want to protect the WHIP endpoint with an API key you can add the environment variable `API_KEY` with the key you wish to require.
+
 ## Development
 
 Start a local Symphony instance using a Docker image we provide for development and testing.
