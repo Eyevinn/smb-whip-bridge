@@ -59,6 +59,18 @@ Start a local Symphony instance using a Docker image we provide for development 
 % SMB_URL=http://localhost:8280 SMB_API_KEY=dev npm run dev
 ```
 
+When a WHIP connection is established you can verify that with the following API call to the local SFU.
+
+```
+% curl -v -H 'X-APIKey: dev' http://localhost:8280/conferences/<conferenceId>/ingest
+```
+
+To list available conferences you can run the following curl command.
+
+```
+% curl -v -H 'X-APIKey: dev' http://localhost:8280/conferences/
+```
+
 ## Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md)
