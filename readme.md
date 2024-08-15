@@ -4,18 +4,10 @@
 
 <div align="center">
   Provides a WHIP endpoint for Symphony Media Bridge SFU
-  <br />
-  <br />
-  :book: <b><a href="https://eyevinn.github.io/{{repo-name}}/">Read the documentation (github pages)</a></b> :eyes:
-  <br />
 </div>
 
 <div align="center">
 <br />
-
-[![npm](https://img.shields.io/npm/v/@eyevinn/{{repo-name}}?style=flat-square)](https://www.npmjs.com/package/@eyevinn/{{repo-name}})
-[![github release](https://img.shields.io/github/v/release/Eyevinn/{{repo-name}}?style=flat-square)](https://github.com/Eyevinn/{{repo-name}}/releases)
-[![license](https://img.shields.io/github/license/eyevinn/{{repo-name}}.svg?style=flat-square)](LICENSE)
 
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg?style=flat-square)](https://github.com/eyevinn/{{repo-name}}/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 [![made with hearth by Eyevinn](https://img.shields.io/badge/made%20with%20%E2%99%A5%20by-Eyevinn-59cbe8.svg?style=flat-square)](https://github.com/eyevinn)
@@ -23,19 +15,61 @@
 
 </div>
 
-<!-- Add a description of the project here -->
+This service provides a WHIP endpoint (WebRTC HTTP Ingestion Protocol) for a Symphony Media Bridge SFU. With this service you can use any WHIP compatible client push a media stream to a Sympony Media Bridge instance.
 
 ## Requirements
 
-<!--Add any external project dependencies such as node.js version etc here -->
+- NodeJs v18+
+- A Symphony Media Bridge SFU instance running
 
 ## Installation / Usage
 
-<!--Add clear instructions on how to use the project here -->
+Install dependencies
+
+```
+% npm install
+```
+
+```
+% export SMB_URL=<URL to Symphony Media Bridge>
+% export SMB_API_KEY=<API key for Symphony Media Bridge API>
+% npm start
+```
+
+The WHIP endpoint is now available at `http://localhost:8000/api/v2/whip/sfu-broadcaster` and you can use a WHIP compatible client to establish a media stream to the Symphony Media Bridge.
+
+To try this out you can use the WHIP web client available [here](https://web.whip.eyevinn.technology/?endpoint=http%3A%2F%2Flocalhost%3A8000%2Fapi%2Fv2%2Fwhip%2Fsfu-broadcaster).
 
 ## Development
 
-<!--Add clear instructions on how to start development of the project here -->
+Start a local Symphony instance using a Docker image we provide for development and testing.
+
+```
+% docker run --rm \
+  -e HTTP_PORT=8280 \
+  -e UDP_PORT=12000 \
+  -e API_KEY=dev \
+  -e IPV4_ADDR=127.0.0.1 \
+  -p 8280:8280 \
+  -p 12000:12000/udp \
+  eyevinntechnology/wrtc-sfu
+```
+
+```
+% SMB_URL=http://localhost:8280 SMB_API_KEY=dev npm run dev
+```
+
+When a WHIP connection is established you can verify that with the following API call to the local SFU.
+
+```
+% curl -v -H 'X-APIKey: dev' http://localhost:8280/conferences/<conferenceId>/ingest
+```
+
+To list available conferences you can run the following curl command.
+
+```
+% curl -v -H 'X-APIKey: dev' http://localhost:8280/conferences/
+```
 
 ## Contributing
 
