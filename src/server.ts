@@ -10,7 +10,9 @@ const server = new WhipEndpoint({
   port: PORT,
   enabledWrtcPlugins: ['sfu-broadcaster']
 });
-server.setOriginSfuUrl(new URL('/conferences/', process.env.SMB_URL).toString());
+server.setOriginSfuUrl(
+  new URL('/conferences/', process.env.SMB_URL).toString()
+);
 if (process.env.SMB_API_KEY) {
   server.setSfuApiKey(process.env.SMB_API_KEY);
 }
