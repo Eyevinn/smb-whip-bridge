@@ -42,6 +42,15 @@ To try this out you can use the WHIP web client available [here](https://web.whi
 
 If you want to protect the WHIP endpoint with an API key you can add the environment variable `API_KEY` with the key you wish to require.
 
+### WHEP Playback Endpoint
+
+To register ingested streams for playback using the [Eyevinn WHEP Playback Endpoint](https://github.com/Eyevinn/wrtc-egress) you enter the URL to the WHEP endpoint service as an additional environment variable (in addition to above).
+
+```
+% export WHEP_ENDPOINT_URL=<URL to WHEP endpoint service>
+% npm start
+```
+
 ## Development
 
 Start a local Symphony instance using a Docker image we provide for development and testing.
