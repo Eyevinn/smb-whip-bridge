@@ -6,12 +6,20 @@ import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { Static, Type } from '@sinclair/typebox';
 import { FastifyPluginCallback } from 'fastify';
 
-const HelloWorld = Type.String({
-  description: 'The magical words!'
+const HealthStatus = Type.String({
+  description: 'Health status of the SMB connectivity check'
 });
+
+// How long to wait for the SMB REST API before treating the probe as failed,
+// so an unreachable SFU never hangs the healthcheck.
+const SMB_HEALTHCHECK_TIMEOUT_MS = 2000;
 
 export interface HealthcheckOptions {
   title: string;
+  // Base URL of the SMB conferences REST endpoint (the derived `sfuUrl`),
+  // threaded in from server.ts rather than re-read from the environment here.
+  sfuUrl: string;
+  sfuApiKey?: string;
 }
 
 const healthcheck: FastifyPluginCallback<HealthcheckOptions> = (
@@ -19,18 +27,46 @@ const healthcheck: FastifyPluginCallback<HealthcheckOptions> = (
   opts,
   next
 ) => {
-  fastify.get<{ Reply: Static<typeof HelloWorld> }>(
+  fastify.get<{ Reply: Static<typeof HealthStatus> }>(
     '/',
     {
       schema: {
-        description: 'Say hello',
+        description: 'Verify Symphony Media Bridge connectivity',
         response: {
-          200: HelloWorld
+          200: HealthStatus,
+          503: HealthStatus
         }
       }
     },
     async (_, reply) => {
-      reply.send('Hello, world! I am ' + opts.title);
+      // Mirror the header shape the whip-endpoint SMB client uses when calling
+      // the SFU: an `X-APIkey` header plus a `Bearer` Authorization header when
+      // an API key is configured.
+      const headers: Record<string, string> = {};
+      if (opts.sfuApiKey) {
+        headers['X-APIkey'] = opts.sfuApiKey;
+        headers['Authorization'] = `Bearer ${opts.sfuApiKey}`;
+      }
+
+      try {
+        const response = await fetch(opts.sfuUrl, {
+          method: 'GET',
+          headers,
+          signal: AbortSignal.timeout(SMB_HEALTHCHECK_TIMEOUT_MS)
+        });
+
+        if (!response.ok) {
+          reply
+            .code(503)
+            .send(`SMB connectivity check failed: HTTP ${response.status}`);
+          return;
+        }
+
+        reply.code(200).send(`OK: ${opts.title} can reach SMB`);
+      } catch (err) {
+        const reason = err instanceof Error ? err.message : String(err);
+        reply.code(503).send(`SMB connectivity check failed: ${reason}`);
+      }
     }
   );
   next();
@@ -38,6 +74,8 @@ const healthcheck: FastifyPluginCallback<HealthcheckOptions> = (
 
 export interface ApiOptions {
   title: string;
+  sfuUrl: string;
+  sfuApiKey?: string;
 }
 
 export default (opts: ApiOptions) => {
@@ -62,7 +100,11 @@ export default (opts: ApiOptions) => {
     routePrefix: '/docs'
   });
 
-  api.register(healthcheck, { title: opts.title });
+  api.register(healthcheck, {
+    title: opts.title,
+    sfuUrl: opts.sfuUrl,
+    sfuApiKey: opts.sfuApiKey
+  });
   // register other API routes here
 
   return api;
