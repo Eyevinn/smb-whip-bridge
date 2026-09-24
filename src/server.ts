@@ -32,7 +32,11 @@ if (process.env.WHEP_ENDPOINT_URL) {
 
 server.listen();
 
-const healthApp = createApi({ title: 'smb-whip-bridge' });
+const healthApp = createApi({
+  title: 'smb-whip-bridge',
+  sfuUrl: sfuUrl.toString(),
+  sfuApiKey: process.env.SMB_API_KEY
+});
 healthApp.listen({ port: HEALTHCHECK_PORT, host: '0.0.0.0' }, (err) => {
   if (err) {
     healthApp.log.error(err);
