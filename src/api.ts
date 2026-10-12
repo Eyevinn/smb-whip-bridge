@@ -80,7 +80,11 @@ export interface ApiOptions {
 
 export default (opts: ApiOptions) => {
   const api = fastify({
-    ignoreTrailingSlash: true
+    // fastify 5 moved router-level options under `routerOptions`; passing
+    // `ignoreTrailingSlash` at the top level is deprecated (FSTDEP022).
+    routerOptions: {
+      ignoreTrailingSlash: true
+    }
   }).withTypeProvider<TypeBoxTypeProvider>();
 
   // register the cors plugin, configure it for better security
