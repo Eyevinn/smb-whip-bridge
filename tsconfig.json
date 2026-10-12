@@ -11,6 +11,7 @@
 
     /* Modules */
     "module": "commonjs" /* Specify what module code is generated. */,
+    "isolatedModules": true /* Ensure each file can be transpiled in isolation (required by ts-jest's transpile-only transform for the ESM deps fastify 5 pulls in). */,
     "resolveJsonModule": true /* Enable importing .json files. */,
     "moduleResolution": "node" /* Specify how TypeScript looks up a file from a given module specifier. */
   }
