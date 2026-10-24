@@ -21,7 +21,7 @@ This service provides a WHIP endpoint (WebRTC HTTP Ingestion Protocol) for a Sym
 
 ## Requirements
 
-- NodeJs v18+
+- NodeJs ^22.23.4 or >=24.22.1
 - A Symphony Media Bridge SFU instance running
 
 ## Installation / Usage
